@@ -6,9 +6,11 @@ function App() {
   const [cargos, setCargos] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
   const fetchCargos = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/cargo');
+      const response = await axios.get(`${API_URL}/api/cargo`);
       setCargos(response.data);
       setLoading(false);
     } catch (error) {
@@ -23,7 +25,7 @@ function App() {
 
   const evaluateRisk = async (id) => {
     try {
-      await axios.post(`http://localhost:5000/api/cargo/${id}/evaluate`);
+      await axios.post(`${API_URL}/api/cargo/${id}/evaluate`);
       fetchCargos(); // Refresh list
     } catch (error) {
       console.error('Error evaluating risk:', error);
@@ -32,7 +34,7 @@ function App() {
 
   const updateStatus = async (id, newStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/cargo/${id}`, { status: newStatus });
+      await axios.put(`${API_URL}/api/cargo/${id}`, { status: newStatus });
       fetchCargos();
     } catch (error) {
       console.error('Error updating status:', error);
@@ -48,7 +50,7 @@ function App() {
       documentsValid: true
     };
     try {
-      await axios.post('http://localhost:5000/api/cargo', newCargo);
+      await axios.post(`${API_URL}/api/cargo`, newCargo);
       fetchCargos();
     } catch (error) {
       console.error('Error adding cargo:', error);
