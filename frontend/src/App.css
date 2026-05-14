@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #0056b3;
+  --primary-color: #0a4275; /* NMPA Navy Blue */
   --secondary-color: #f8f9fa;
   --text-color: #333;
   --risk-high: #dc3545;
@@ -21,6 +21,85 @@ body {
   color: var(--text-color);
 }
 
+/* Login Page Styles */
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.login-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.login-box {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  z-index: 1;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-box h2 {
+  margin-top: 0;
+  color: var(--primary-color);
+}
+
+.login-box p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(10, 66, 117, 0.2);
+}
+
+.error-text {
+  color: #dc3545;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.login-hint {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #888;
+}
+
+/* Dashboard Styles */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -36,6 +115,12 @@ body {
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .header h1 {
   margin: 0;
   font-size: 24px;
@@ -45,6 +130,29 @@ body {
   margin: 5px 0 0;
   font-size: 14px;
   opacity: 0.8;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.offline-badge {
+  background-color: #ffc107;
+  color: #333;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.logout-btn {
+  background-color: rgba(255,255,255,0.2) !important;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255,255,255,0.3) !important;
 }
 
 .main-content {
@@ -63,10 +171,10 @@ body {
 .btn {
   padding: 10px 15px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.3s;
+  transition: all 0.2s;
 }
 
 .btn.primary {
@@ -75,12 +183,18 @@ body {
 }
 
 .btn.primary:hover {
-  background-color: #004494;
+  background-color: #08335b;
+}
+
+.btn.full-width {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
 }
 
 .btn.sm {
-  padding: 5px 10px;
-  font-size: 12px;
+  padding: 6px 12px;
+  font-size: 13px;
   background-color: #6c757d;
   color: white;
 }
@@ -89,25 +203,34 @@ body {
   background-color: #5a6268;
 }
 
+.table-responsive {
+  overflow-x: auto;
+}
+
 .cargo-table {
   width: 100%;
   border-collapse: collapse;
 }
 
 .cargo-table th, .cargo-table td {
-  padding: 12px 15px;
+  padding: 15px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #eee;
 }
 
 .cargo-table th {
   background-color: var(--secondary-color);
-  font-weight: bold;
+  font-weight: 600;
+  color: #555;
+}
+
+.cargo-table tr:hover {
+  background-color: #fcfcfc;
 }
 
 .badge {
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 5px 10px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: bold;
 }
