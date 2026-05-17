@@ -40,7 +40,6 @@ export default function Dashboard({ role, onLogout }) {
       await axios.post(`${API_URL}/api/cargo`, newCargo, { headers: { Authorization: `Bearer ${token}` } });
       fetchCargos();
     } catch (err) {
-      // Mock Layer 4: Cargo mgmt
       newCargo._id = Date.now().toString();
       newCargo.documents = [];
       newCargo.riskLevel = 'Pending';
@@ -55,8 +54,7 @@ export default function Dashboard({ role, onLogout }) {
       await axios.post(`${API_URL}/api/cargo/${cargoId}/document`, {}, { headers: { Authorization: `Bearer ${token}` } });
       fetchCargos();
     } catch (err) {
-      // Mock Layer 4: Doc upload (GridFS/S3)
-      const updated = cargos.map(c => c._id === cargoId ? { ...c, documents: [...c.documents, 'Uploaded Doc (GridFS)'] } : c);
+      const updated = cargos.map(c => c._id === cargoId ? { ...c, documents: [...c.documents, 'Uploaded Doc'] } : c);
       saveLocal(updated);
     }
   };
@@ -66,7 +64,6 @@ export default function Dashboard({ role, onLogout }) {
       await axios.post(`${API_URL}/api/cargo/${cargoId}/evaluate`, {}, { headers: { Authorization: `Bearer ${token}` } });
       fetchCargos();
     } catch (err) {
-      // Mock Layer 5: AI inspection engine
       const updated = cargos.map(c => {
         if (c._id === cargoId) {
           let score = 0;
@@ -86,7 +83,7 @@ export default function Dashboard({ role, onLogout }) {
   };
 
   const generateReport = () => {
-    alert("Layer 4 & 8: Generating PDF/CSV inspection summary...");
+    alert("Generating PDF/CSV inspection summary...");
   };
 
   return (
@@ -94,63 +91,76 @@ export default function Dashboard({ role, onLogout }) {
       <header className="header">
         <div className="header-content">
           <div>
-            <h1>Layer 1 — Inspector Dashboard</h1>
-            <p>Role: {role.toUpperCase()}</p>
+            <h1>Inspector Dashboard</h1>
+            <p>Welcome back! You are logged in as <strong>{role.toUpperCase()}</strong></p>
           </div>
           <div className="header-actions">
-            {role === 'admin' && <Link to="/admin" className="btn sm" style={{background: '#6f42c1', color: 'white'}}>Admin Panel</Link>}
-            <button className="btn sm logout-btn" onClick={onLogout}>Logout</button>
+            {role === 'admin' && (
+              <Link to="/admin" className="btn sm" style={{background: '#0052cc', color: 'white', padding: '10px 16px', fontSize: '14px', borderRadius: '8px'}}>
+                Admin Panel
+              </Link>
+            )}
+            <button className="btn sm logout-btn" style={{padding: '10px 16px', fontSize: '14px', borderRadius: '8px'}} onClick={onLogout}>Logout</button>
           </div>
         </div>
       </header>
 
       <main className="main-content">
         <section className="cargo-entry-form">
-          <h3>Workflow Step 3: Cargo Data Entry</h3>
-          <form onSubmit={handleCargoEntry} style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
+          <h3>Register New Cargo Manifest</h3>
+          <form onSubmit={handleCargoEntry}>
             <input name="shipmentId" placeholder="Shipment ID (e.g. S-100)" required />
             <input name="cargoType" placeholder="Cargo Type (e.g. Electronics)" required />
             <input name="originPort" placeholder="Origin Port (e.g. Dubai)" required />
             <input name="vesselName" placeholder="Vessel Name" required />
             <input name="arrivalDate" type="date" required />
-            <button type="submit" className="btn primary">Add Cargo</button>
+            <button type="submit" className="btn primary">Register Cargo</button>
           </form>
         </section>
 
-        <section className="cargo-list" style={{marginTop: '30px'}}>
-          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-            <h3>Workflow Step 4-7: Inspection Pipeline</h3>
-            <button onClick={generateReport} className="btn primary">Generate Report</button>
+        <section className="cargo-list">
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
+            <h3 style={{margin: 0}}>Inspection Pipeline</h3>
+            <button onClick={generateReport} className="btn sm">Download Report</button>
           </div>
           
           <table className="cargo-table">
             <thead>
               <tr>
                 <th>Shipment ID</th>
-                <th>Type & Origin</th>
-                <th>Docs</th>
-                <th>Risk (Layer 5 AI)</th>
-                <th>Status (Decision)</th>
+                <th>Cargo Details</th>
+                <th>Documents</th>
+                <th>AI Risk Score</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {cargos.map(c => (
+              {cargos.length === 0 ? (
+                <tr>
+                  <td colSpan="6" style={{textAlign: 'center', color: '#5e6c84', padding: '30px'}}>No cargo data available.</td>
+                </tr>
+              ) : cargos.map(c => (
                 <tr key={c._id} className={`risk-${c.riskLevel?.toLowerCase()}`}>
-                  <td>{c.shipmentId}</td>
-                  <td>{c.cargoType} <br/><small>{c.originPort}</small></td>
+                  <td><strong>{c.shipmentId}</strong></td>
+                  <td>
+                    <div style={{fontWeight: 500, color: '#172b4d'}}>{c.cargoType}</div>
+                    <div style={{fontSize: '12px', color: '#5e6c84'}}>From: {c.originPort}</div>
+                  </td>
                   <td>{c.documents?.length} files</td>
                   <td>
                     <span className={`badge risk-${c.riskLevel?.toLowerCase()}`}>{c.riskLevel}</span>
                   </td>
-                  <td>{c.status}</td>
+                  <td style={{fontWeight: 500}}>{c.status}</td>
                   <td>
-                    <button className="btn sm" onClick={() => handleDocUpload(c._id)}>Upload Doc</button>
-                    {c.status === 'Data Entry' && (
-                      <button className="btn sm primary" style={{marginLeft:'5px'}} onClick={() => runAIEngine(c._id)}>
-                        Run AI Rules
-                      </button>
-                    )}
+                    <div style={{display: 'flex', gap: '8px'}}>
+                      <button className="btn sm" onClick={() => handleDocUpload(c._id)}>Add Doc</button>
+                      {c.status === 'Data Entry' && (
+                        <button className="btn sm primary" onClick={() => runAIEngine(c._id)}>
+                          Evaluate Risk
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
