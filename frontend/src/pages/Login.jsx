@@ -2,7 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Anchor } from 'lucide-react'; // Using an anchor icon for the port theme
 
-const PORT_IMAGE = 'https://images.unsplash.com/photo-1586528116311-ad8ed3c84a0d?q=80&w=2070&auto=format&fit=crop';
+// Using actual New Mangalore Port image
+const PORT_IMAGE = 'https://upload.wikimedia.org/wikipedia/commons/e/e0/New_Mangalore_Port.jpg';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function Login({ onLogin }) {
