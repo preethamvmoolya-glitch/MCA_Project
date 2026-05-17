@@ -44,8 +44,8 @@ export default function Dashboard({ role, onLogout }) {
       newCargo._id = Date.now().toString();
       newCargo.documents = [];
       newCargo.riskLevel = 'Pending';
-      newCargo.status = 'Data Entry';
-      saveLocal([newCargo, ...cargos]); // Add to top
+      newCargo.status = 'Cargo Arrival & Data Entry';
+      saveLocal([newCargo, ...cargos]);
     }
     e.target.reset();
   };
@@ -62,7 +62,6 @@ export default function Dashboard({ role, onLogout }) {
 
   const runAIEngine = async (cargoId) => {
     setIsProcessing(true);
-    // Simulate AI processing time for UX
     setTimeout(async () => {
       try {
         await axios.post(`${API_URL}/api/cargo/${cargoId}/evaluate`, {}, { headers: { Authorization: `Bearer ${token}` } });
@@ -76,9 +75,7 @@ export default function Dashboard({ role, onLogout }) {
             if (c.documents.length === 0) score += 30;
             
             let risk = score >= 70 ? 'High' : (score >= 30 ? 'Medium' : 'Low');
-            let status = risk === 'High' ? 'Detain Cargo' : (risk === 'Medium' ? 'Secondary Inspection' : 'Expedite');
-            
-            return { ...c, riskLevel: risk, status: status };
+            return { ...c, riskLevel: risk, status: 'Cargo Triage & Task Allocation' };
           }
           return c;
         });
@@ -88,8 +85,18 @@ export default function Dashboard({ role, onLogout }) {
     }, 1000);
   };
 
+  const runInspection = (cargoId, riskLevel) => {
+    const updated = cargos.map(c => {
+      if (c._id === cargoId) {
+        return { ...c, status: 'Disposition & Record-Keeping' };
+      }
+      return c;
+    });
+    saveLocal(updated);
+  };
+
   const generateReport = () => {
-    alert("Generating official NMPA PDF inspection summary...");
+    alert("Generating official NMPA PDF inspection summary & Archive Data...");
   };
 
   return (
@@ -101,8 +108,8 @@ export default function Dashboard({ role, onLogout }) {
               <Ship size={28} />
             </div>
             <div>
-              <h1>New Mangalore Port Authority</h1>
-              <p>Smart Cargo Operations & Inspection Portal</p>
+              <h1>New Mangalore Port Authority (NMPA)</h1>
+              <p>Smart Cargo Inspection System</p>
             </div>
           </div>
           <div className="header-actions">
@@ -123,16 +130,16 @@ export default function Dashboard({ role, onLogout }) {
         <section className="cargo-entry-form">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
             <Package size={20} color="#0052cc" />
-            <h3 style={{ margin: 0 }}>Vessel Pre-Arrival Notice</h3>
+            <h3 style={{ margin: 0 }}>Cargo Arrival & Data Entry</h3>
           </div>
-          <p style={{ fontSize: '14px', color: '#5e6c84', marginBottom: '20px' }}>Enter 72-hour advance cargo manifest details to initiate the inspection pipeline.</p>
+          <p style={{ fontSize: '14px', color: '#5e6c84', marginBottom: '20px' }}>User: Port Staff | Ship berths, digital submission of declarations.</p>
           <form onSubmit={handleCargoEntry}>
             <input name="shipmentId" placeholder="Shipment ID (e.g. S-100)" required />
             <input name="cargoType" placeholder="Cargo Type (e.g. Electronics)" required />
             <input name="originPort" placeholder="Origin Port (e.g. Dubai)" required />
             <input name="vesselName" placeholder="Vessel Name" required />
             <input name="arrivalDate" type="date" required />
-            <button type="submit" className="btn primary">Submit Manifest</button>
+            <button type="submit" className="btn primary">Submit Data</button>
           </form>
         </section>
 
@@ -140,10 +147,10 @@ export default function Dashboard({ role, onLogout }) {
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Activity size={20} color="#0052cc" />
-              <h3 style={{margin: 0}}>Live Inspection Pipeline</h3>
+              <h3 style={{margin: 0}}>Operational Workflow & Decision Pipeline</h3>
             </div>
             <button onClick={generateReport} className="btn sm" style={{ display: 'flex', alignItems: 'center', gap: '6px'}}>
-              <FileText size={16} /> Download Summary Report
+              <FileText size={16} /> Generate Report
             </button>
           </div>
           
@@ -153,7 +160,7 @@ export default function Dashboard({ role, onLogout }) {
                 <th>Shipment ID</th>
                 <th>Cargo Details</th>
                 <th>Documents</th>
-                <th>AI Risk Score</th>
+                <th>Risk Level</th>
                 <th>Pipeline Status</th>
                 <th>Actions</th>
               </tr>
@@ -164,7 +171,7 @@ export default function Dashboard({ role, onLogout }) {
                   <td colSpan="6" style={{textAlign: 'center', color: '#5e6c84', padding: '40px'}}>
                     <Search size={32} style={{ opacity: 0.3, marginBottom: '10px' }} />
                     <br/>
-                    No cargo manifests currently in the pipeline.
+                    No cargo in the pipeline.
                   </td>
                 </tr>
               ) : cargos.map(c => (
@@ -183,17 +190,23 @@ export default function Dashboard({ role, onLogout }) {
                     <span className={`badge risk-${c.riskLevel?.toLowerCase()}`}>{c.riskLevel}</span>
                   </td>
                   <td style={{fontWeight: 500}}>
-                    {c.status === 'Data Entry' && <span style={{color: '#5e6c84'}}>Awaiting AI Scrutiny</span>}
-                    {c.status === 'Expedite' && <span style={{color: '#00875a', display: 'flex', alignItems: 'center', gap:'4px'}}><CheckCircle size={14}/> Berth Cleared</span>}
-                    {c.status === 'Secondary Inspection' && <span style={{color: '#ff991f'}}>Targeted Physical Check</span>}
-                    {c.status === 'Detain Cargo' && <span style={{color: '#de350b', display: 'flex', alignItems: 'center', gap:'4px'}}><ShieldAlert size={14}/> Full Inspection Required</span>}
+                    {c.status === 'Cargo Arrival & Data Entry' && <span style={{color: '#5e6c84'}}>Cargo Arrival & Data Entry</span>}
+                    {c.status === 'Cargo Triage & Task Allocation' && <span style={{color: '#ff991f'}}>Cargo Triage & Task Allocation</span>}
+                    {c.status === 'Disposition & Record-Keeping' && <span style={{color: '#00875a', display: 'flex', alignItems: 'center', gap:'4px'}}><CheckCircle size={14}/> Disposition & Record-Keeping</span>}
                   </td>
                   <td>
                     <div style={{display: 'flex', gap: '8px'}}>
-                      <button className="btn sm" onClick={() => handleDocUpload(c._id)} title="Upload Bill of Lading / Manifest">Add Doc</button>
-                      {c.status === 'Data Entry' && (
-                        <button className="btn sm primary" onClick={() => runAIEngine(c._id)} disabled={isProcessing}>
-                          {isProcessing ? 'Analyzing...' : 'Run AI Evaluation'}
+                      <button className="btn sm" onClick={() => handleDocUpload(c._id)} title="Upload Scans & Declarations">Add Doc</button>
+                      
+                      {c.status === 'Cargo Arrival & Data Entry' && (
+                        <button className="btn sm primary" onClick={() => runAIEngine(c._id)} title="Process: AI Engine" disabled={isProcessing}>
+                          {isProcessing ? 'Analyzing...' : 'Automated Risk Evaluation'}
+                        </button>
+                      )}
+                      
+                      {c.status === 'Cargo Triage & Task Allocation' && (
+                        <button className="btn sm" onClick={() => runInspection(c._id, c.riskLevel)} title="Action: Inspector" style={{ background: '#ff991f', color: 'white' }}>
+                          Focused Inspection
                         </button>
                       )}
                     </div>
