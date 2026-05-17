@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #0a4275; /* NMPA Navy Blue */
+  --primary-color: #0a4275;
   --secondary-color: #f8f9fa;
   --text-color: #333;
   --risk-high: #dc3545;
@@ -21,7 +21,6 @@ body {
   color: var(--text-color);
 }
 
-/* Login Page Styles */
 .login-container {
   height: 100vh;
   width: 100vw;
@@ -55,11 +54,6 @@ body {
   color: var(--primary-color);
 }
 
-.login-box p {
-  color: #666;
-  margin-bottom: 30px;
-}
-
 .input-group {
   margin-bottom: 20px;
   text-align: left;
@@ -78,94 +72,6 @@ body {
   border: 1px solid #ddd;
   border-radius: 6px;
   box-sizing: border-box;
-  font-size: 16px;
-}
-
-.input-group input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(10, 66, 117, 0.2);
-}
-
-.error-text {
-  color: #dc3545;
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-
-.login-hint {
-  margin-top: 20px;
-  font-size: 12px;
-  color: #888;
-}
-
-/* Dashboard Styles */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.header {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 20px 30px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.header p {
-  margin: 5px 0 0;
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.offline-badge {
-  background-color: #ffc107;
-  color: #333;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.logout-btn {
-  background-color: rgba(255,255,255,0.2) !important;
-}
-
-.logout-btn:hover {
-  background-color: rgba(255,255,255,0.3) !important;
-}
-
-.main-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.controls {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: flex-end;
 }
 
 .btn {
@@ -182,14 +88,9 @@ body {
   color: white;
 }
 
-.btn.primary:hover {
-  background-color: #08335b;
-}
-
 .btn.full-width {
   width: 100%;
   padding: 12px;
-  font-size: 16px;
 }
 
 .btn.sm {
@@ -199,12 +100,47 @@ body {
   color: white;
 }
 
-.btn.sm:hover {
-  background-color: #5a6268;
+/* Dashboard Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.table-responsive {
-  overflow-x: auto;
+.header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 { margin: 0; font-size: 24px; }
+.header p { margin: 5px 0 0; font-size: 14px; opacity: 0.8; }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.main-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.cargo-entry-form input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 .cargo-table {
@@ -221,11 +157,6 @@ body {
 .cargo-table th {
   background-color: var(--secondary-color);
   font-weight: 600;
-  color: #555;
-}
-
-.cargo-table tr:hover {
-  background-color: #fcfcfc;
 }
 
 .badge {
